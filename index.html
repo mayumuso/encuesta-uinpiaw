@@ -1,0 +1,1047 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clase: Estadística básica | Tabla de frecuencia</title>
+  <style>
+    :root{
+      --red:#d6352a;
+      --yellow:#ffcf18;
+      --blue:#1688c9;
+      --green:#36a852;
+      --deep:#153f5f;
+      --deep-2:#0f5f89;
+      --gold:#b8860b;
+      --paper:#fffdf8;
+      --ink:#20242a;
+      --muted:#5c6470;
+      --line:#dfe4ea;
+      --soft:#eef6fb;
+      --cream:#fff6d6;
+      --sky:#e8f5fd;
+      --rose:#fff0ec;
+      --ok:#237a3b;
+      --bad:#b94f3d;
+      --shadow:0 14px 34px rgba(15,57,89,.15);
+      --radius:8px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 14px 14px, rgba(255,207,24,.14) 0 2px, transparent 2px),
+        linear-gradient(90deg, rgba(22,136,201,.045) 1px, transparent 1px),
+        linear-gradient(rgba(21,63,95,.035) 1px, transparent 1px),
+        var(--paper);
+      background-size:28px 28px;
+      font-size:16px;
+      line-height:1.55;
+    }
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:linear-gradient(90deg,#102f45 0%,#153f5f 48%,#0f5f89 100%);
+      color:#fff;
+      border-bottom:5px solid transparent;
+      border-image:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--green)) 1;
+      box-shadow:0 3px 14px rgba(0,0,0,.22);
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      padding:12px 22px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:800;
+      letter-spacing:.03em;
+      white-space:nowrap;
+    }
+    .brand img{
+      width:48px;
+      height:48px;
+      background:#fff;
+      border-radius:10px;
+      padding:4px;
+      box-shadow:0 4px 10px rgba(0,0,0,.22);
+    }
+    .brand span{display:block}
+    .brand small{
+      display:block;
+      font-size:10px;
+      color:#dcecf6;
+      font-weight:700;
+      letter-spacing:0;
+    }
+    .title{flex:1;min-width:240px}
+    .title h1{margin:0;font-size:20px;letter-spacing:0}
+    .title p{margin:2px 0 0;font-size:13px;color:#dbeef8}
+    nav{
+      display:flex;
+      gap:4px;
+      overflow:auto;
+      padding:0 18px 10px;
+    }
+    nav a{
+      color:#fff;
+      text-decoration:none;
+      font-size:13px;
+      font-weight:700;
+      padding:8px 11px;
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:999px;
+      white-space:nowrap;
+    }
+    nav a:hover{background:rgba(255,255,255,.12)}
+    main{
+      width:min(1180px, calc(100% - 30px));
+      margin:22px auto 70px;
+    }
+    .board{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 300px;
+      gap:18px;
+      align-items:start;
+    }
+    .side{
+      position:sticky;
+      top:112px;
+      display:grid;
+      gap:14px;
+    }
+    .panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .panel h2,.panel h3{margin:0;color:var(--deep-2);letter-spacing:0}
+    .panel-head{
+      background:linear-gradient(90deg,var(--soft),#fff);
+      border-bottom:1px solid var(--line);
+      padding:14px 16px;
+    }
+    .panel-body{padding:16px}
+    .hero{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:18px;
+      padding:22px;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.94),rgba(255,246,214,.86)),
+        linear-gradient(90deg,rgba(214,53,42,.10),rgba(255,207,24,.14),rgba(22,136,201,.15),rgba(54,168,82,.08));
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      min-height:340px;
+      scroll-margin-top:145px;
+    }
+    .kicker{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      color:var(--deep);
+      font-size:13px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      margin-bottom:10px;
+    }
+    .kicker::before{
+      content:"";
+      width:52px;
+      height:8px;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--green));
+    }
+    .hero h2{
+      color:var(--deep);
+      font-size:38px;
+      line-height:1.08;
+      margin:0 0 10px;
+    }
+    .hero p{font-size:18px;margin:0 0 14px}
+    .formula-card{
+      background:#fff;
+      border:2px solid var(--blue);
+      border-radius:var(--radius);
+      padding:14px 16px;
+      margin:12px 0;
+      color:#0d5f93;
+      font-size:18px;
+      font-weight:800;
+    }
+    .prompt{
+      background:var(--sky);
+      border:1px solid #b8dff1;
+      padding:14px;
+      border-radius:var(--radius);
+      font-size:18px;
+      font-weight:800;
+      color:#113d5d;
+    }
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .chip{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:7px 10px;
+      font-size:13px;
+      font-weight:700;
+      color:var(--deep-2);
+    }
+    .hero-art{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:10px;
+      min-height:260px;
+    }
+    .section{margin-top:18px;scroll-margin-top:145px}
+    .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .note{
+      border-left:5px solid var(--gold);
+      background:var(--cream);
+      padding:12px 14px;
+      border-radius:0 var(--radius) var(--radius) 0;
+    }
+    .etno{
+      border-left:5px solid var(--blue);
+      background:var(--soft);
+      padding:12px 14px;
+      border-radius:0 var(--radius) var(--radius) 0;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:12px 0;
+      font-size:15px;
+    }
+    th{
+      background:var(--deep-2);
+      color:#fff;
+      text-align:left;
+      padding:10px;
+      border:1px solid #0b4c6f;
+    }
+    td{
+      padding:9px 10px;
+      border:1px solid var(--line);
+      vertical-align:top;
+    }
+    tr:nth-child(even) td{background:#fbfdf9}
+    .calc{color:#0d5f93;font-weight:800;white-space:nowrap}
+    .btn{
+      appearance:none;
+      border:0;
+      border-radius:6px;
+      background:var(--deep-2);
+      color:#fff;
+      padding:9px 12px;
+      font-weight:800;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn:hover{background:#1677aa}
+    .btn.secondary{background:var(--blue)}
+    .btn.gold{background:var(--gold)}
+    .answer{
+      display:none;
+      margin-top:10px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-left:5px solid var(--blue);
+      padding:12px;
+      border-radius:0 var(--radius) var(--radius) 0;
+    }
+    .answer.show{display:block}
+    .concept-list{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:12px;
+    }
+    .term{
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px;
+      min-height:110px;
+    }
+    .term strong{display:block;color:var(--deep-2);font-size:18px;margin-bottom:8px}
+    .dropzone{
+      min-height:42px;
+      border:2px dashed #b9c8d6;
+      border-radius:6px;
+      padding:8px;
+      background:#fff;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .dropzone.over{background:#eef8ff;border-color:var(--blue)}
+    .cards{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+    .drag-card{
+      background:#fff;
+      border:1px solid #b9c8d6;
+      border-left:5px solid var(--blue);
+      border-radius:6px;
+      padding:8px 10px;
+      max-width:320px;
+      font-size:13px;
+      font-weight:700;
+      cursor:grab;
+      box-shadow:0 4px 12px rgba(15,57,89,.08);
+    }
+    .drag-card.wrong{
+      border-color:var(--bad);
+      border-left-color:var(--bad);
+      background:#fff4f1;
+    }
+    .drag-card.correct{
+      border-color:var(--ok);
+      border-left-color:var(--ok);
+      background:#f0fff4;
+    }
+    .drag-card:active{cursor:grabbing}
+    .match-feedback,.quiz-feedback,.ticket-feedback{
+      margin-top:10px;
+      font-weight:800;
+    }
+    .solution-box{
+      background:#fff;
+      border:1px solid var(--line);
+      border-left:5px solid var(--gold);
+      border-radius:0 var(--radius) var(--radius) 0;
+      padding:12px;
+      margin-top:10px;
+    }
+    .ok{color:var(--ok)}
+    .bad{color:var(--bad)}
+    .graph-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .graph-card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:12px;
+      min-height:235px;
+    }
+    .graph-card h4{margin:0 0 8px;color:var(--deep-2)}
+    .graph-card svg{width:100%;height:125px;border:1px solid var(--line);border-radius:6px;background:#fff}
+    .exercise{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:14px;
+      min-height:178px;
+    }
+    .exercise h4{margin:0 0 8px;color:var(--deep-2);font-size:16px}
+    .tag{
+      display:inline-block;
+      border-radius:999px;
+      padding:3px 8px;
+      background:var(--rose);
+      color:var(--bad);
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+    input[type="number"], textarea{
+      width:100%;
+      border:1px solid #b9c8d6;
+      border-radius:6px;
+      padding:9px;
+      font:inherit;
+      margin:6px 0 10px;
+    }
+    textarea{min-height:90px;resize:vertical}
+    .bar-wrap{display:grid;gap:8px;margin:12px 0 4px}
+    .bar-row{display:grid;grid-template-columns:150px 1fr 50px;gap:10px;align-items:center;font-size:14px}
+    .bar{height:24px;background:#e8eef3;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+    .fill{height:100%;background:linear-gradient(90deg,var(--blue),#69a9d8,var(--yellow))}
+    .timer{
+      text-align:center;
+      background:#fff;
+      border:2px solid var(--gold);
+      border-radius:var(--radius);
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    .floating-timer{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:40;
+      width:210px;
+      padding:10px;
+      border-color:var(--blue);
+      box-shadow:0 14px 38px rgba(15,57,89,.28);
+    }
+    .floating-timer strong{
+      display:block;
+      font-size:12px;
+      color:var(--deep);
+    }
+    .time{
+      font-size:42px;
+      line-height:1;
+      color:var(--deep-2);
+      font-weight:900;
+      margin:8px 0 12px;
+      font-variant-numeric:tabular-nums;
+    }
+    .floating-timer .time{
+      font-size:30px;
+      margin:5px 0 8px;
+    }
+    .timer-controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+    .floating-timer .btn{
+      padding:6px 8px;
+      font-size:12px;
+    }
+    .video-card{
+      display:block;
+      color:inherit;
+      text-decoration:none;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px;
+      background:#fff;
+      margin-top:10px;
+    }
+    .video-card:hover{border-color:var(--blue);box-shadow:0 6px 18px rgba(22,136,201,.14)}
+    .video-title{display:flex;align-items:center;gap:8px;font-weight:900;color:#0d5f93;margin-bottom:4px}
+    .play{
+      width:24px;
+      height:24px;
+      border-radius:50%;
+      background:var(--bad);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:12px;
+      flex:0 0 auto;
+    }
+    .career-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+    .career{padding:10px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:14px}
+    .career strong{color:var(--deep-2)}
+    .closing{
+      background:linear-gradient(135deg,#153f5f,#0f5f89);
+      color:#fff;
+      border-radius:var(--radius);
+      padding:20px;
+      border-bottom:6px solid var(--yellow);
+    }
+    .closing h3{color:#fff;margin:0 0 8px;font-size:24px}
+    .closing p{font-size:18px;margin:0}
+    .student-message{
+      margin-top:14px;
+      background:#fffdf8;
+      border:2px solid var(--yellow);
+      border-radius:var(--radius);
+      padding:16px;
+      font-size:18px;
+      font-weight:800;
+      color:var(--deep);
+    }
+    .print-note{display:none}
+    @media(max-width:980px){
+      .board{grid-template-columns:1fr}
+      .side{position:static}
+      .hero{grid-template-columns:1fr}
+      .grid-3,.grid-2,.graph-options,.concept-list,.career-list{grid-template-columns:1fr}
+    }
+    @media print{
+      header,.side,.floating-timer,.btn,.video-card{display:none!important}
+      main{width:100%;margin:0}
+      .board{display:block}
+      .panel,.hero{box-shadow:none;break-inside:avoid}
+      .answer{display:block}
+      .print-note{display:block}
+      body{background:#fff}
+    }
+  </style>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="brand">
+        <img src="assets/logo-uaw.svg" alt="Logo UAW">
+        <span>UINPIAW<small>Amawtay Wasi</small></span>
+      </div>
+      <div class="title">
+        <h1>Clase: Estadística básica | Tema: Tabla de frecuencia</h1>
+        <p>Grupo B · Matemática aplicada · De la teoría al análisis del territorio</p>
+      </div>
+    </div>
+    <nav>
+      <a href="#inicio">Introducción</a>
+      <a href="#conceptos">Conceptos</a>
+      <a href="#etno">Etnomatemática</a>
+      <a href="#ejemplo">Ejemplo</a>
+      <a href="#graficas">Gráficas</a>
+      <a href="#ejercicios">Ejercicios</a>
+      <a href="#carreras">Carreras</a>
+      <a href="#cierre">Cierre</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="timer floating-timer" aria-label="Temporizador fijo de clase">
+      <strong>Temporizador</strong>
+      <div id="time" class="time">20:00</div>
+      <div class="timer-controls">
+        <button class="btn" id="start">Iniciar</button>
+        <button class="btn secondary" id="pause">Pausar</button>
+        <button class="btn gold" id="reset">Reiniciar</button>
+      </div>
+    </div>
+
+    <div class="board">
+      <div>
+        <section id="inicio" class="hero">
+          <div>
+            <div class="kicker">Clase demostrativa · Estadística básica</div>
+            <h2>Tabla de frecuencia: organizar datos para interpretar mejor</h2>
+            <p>Empezamos por la parte teórica: una tabla de frecuencia resume respuestas, permite calcular porcentajes y prepara la información para elegir una gráfica adecuada.</p>
+            <div class="formula-card">
+              \[
+                P_i=\frac{f_i}{n}\times 100
+              \]
+              <div>Donde \(f_i\) es la frecuencia de la categoría y \(n\) es el total de datos.</div>
+            </div>
+            <div class="prompt">Pregunta guía: ¿cómo pasamos de respuestas sueltas a información organizada para decidir?</div>
+            <div class="chips">
+              <span class="chip">Dato</span>
+              <span class="chip">Variable</span>
+              <span class="chip">Frecuencia absoluta</span>
+              <span class="chip">Frecuencia relativa</span>
+              <span class="chip">Porcentaje</span>
+            </div>
+          </div>
+          <div class="hero-art" aria-label="Esquema visual de tabla de frecuencia">
+            <svg viewBox="0 0 420 320" role="img" width="100%" height="100%">
+              <rect x="0" y="0" width="420" height="320" fill="#f8fbff"/>
+              <rect x="32" y="18" width="356" height="34" rx="7" fill="#eef6fb" stroke="#b9c8d6"/>
+              <text x="54" y="40" font-size="16" font-weight="900" fill="#153f5f">Respuestas</text>
+              <text x="157" y="40" font-size="16" font-weight="900" fill="#1688c9">→</text>
+              <text x="186" y="40" font-size="16" font-weight="900" fill="#153f5f">Tabla</text>
+              <text x="248" y="40" font-size="16" font-weight="900" fill="#1688c9">→</text>
+              <text x="278" y="40" font-size="16" font-weight="900" fill="#153f5f">Decisión</text>
+              <rect x="38" y="70" width="105" height="170" rx="8" fill="#fff6d6" stroke="#b8860b" stroke-width="3"/>
+              <text x="54" y="105" font-size="15" font-weight="700" fill="#153f5f">agua</text>
+              <text x="54" y="135" font-size="15" font-weight="700" fill="#153f5f">educación</text>
+              <text x="54" y="165" font-size="15" font-weight="700" fill="#153f5f">agua</text>
+              <text x="54" y="195" font-size="15" font-weight="700" fill="#153f5f">turismo</text>
+              <path d="M155 155 H205" stroke="#1688c9" stroke-width="6" stroke-linecap="round"/>
+              <path d="M190 138 L208 155 L190 172" fill="none" stroke="#1688c9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="218" y="68" width="174" height="176" rx="10" fill="#fff" stroke="#1688c9" stroke-width="3"/>
+              <line x1="218" y1="113" x2="392" y2="113" stroke="#1688c9" stroke-width="3"/>
+              <line x1="327" y1="68" x2="327" y2="244" stroke="#1688c9" stroke-width="3"/>
+              <text x="234" y="96" font-size="15" font-weight="900" fill="#153f5f">Categoría</text>
+              <text x="353" y="96" font-size="15" font-weight="900" fill="#153f5f" text-anchor="middle">%</text>
+              <text x="238" y="143" font-size="14" fill="#153f5f">Agua</text>
+              <text x="353" y="143" font-size="14" fill="#153f5f" text-anchor="middle">40</text>
+              <text x="238" y="177" font-size="14" fill="#153f5f">Educ.</text>
+              <text x="353" y="177" font-size="14" fill="#153f5f" text-anchor="middle">25</text>
+              <text x="238" y="211" font-size="14" fill="#153f5f">Com.</text>
+              <text x="353" y="211" font-size="14" fill="#153f5f" text-anchor="middle">15</text>
+              <rect x="56" y="270" width="310" height="30" rx="5" fill="#153f5f"/>
+              <text x="75" y="291" font-size="15" fill="#fff">contar + ordenar + comparar + interpretar</text>
+            </svg>
+          </div>
+        </section>
+
+        <section id="conceptos" class="section panel">
+          <div class="panel-head"><h2>Conceptos</h2></div>
+          <div class="panel-body">
+            <p>Estos son los conceptos que necesitamos para construir una tabla de frecuencia.</p>
+            <div class="concept-list">
+              <div class="term"><strong>Dato</strong><div class="dropzone" data-accept="dato">Arrastra aquí su definición</div></div>
+              <div class="term"><strong>Variable</strong><div class="dropzone" data-accept="variable">Arrastra aquí su definición</div></div>
+              <div class="term"><strong>Frecuencia</strong><div class="dropzone" data-accept="frecuencia">Arrastra aquí su definición</div></div>
+              <div class="term"><strong>Porcentaje</strong><div class="dropzone" data-accept="porcentaje">Arrastra aquí su definición</div></div>
+            </div>
+            <div class="cards" id="defs-cards" aria-label="Tarjetas de definiciones">
+              <div class="drag-card" draggable="true" data-match="frecuencia">Número de veces que aparece una respuesta o categoría.</div>
+              <div class="drag-card" draggable="true" data-match="dato">Información registrada u observación recogida.</div>
+              <div class="drag-card" draggable="true" data-match="porcentaje">Parte del total expresada en base 100.</div>
+              <div class="drag-card" draggable="true" data-match="variable">Característica que se estudia o clasifica.</div>
+            </div>
+            <button class="btn" id="check-defs">Verificar definiciones</button>
+            <button class="btn gold" id="reset-defs">Repetir definiciones</button>
+            <div id="defs-feedback" class="match-feedback"></div>
+
+            <h3 style="margin-top:18px">Ejemplos: arrastra cada caso al concepto correcto</h3>
+            <div class="concept-list">
+              <div class="term"><strong>Dato</strong><div class="dropzone example-drop" data-accept="dato">Ejemplo de dato</div></div>
+              <div class="term"><strong>Variable</strong><div class="dropzone example-drop" data-accept="variable">Ejemplo de variable</div></div>
+              <div class="term"><strong>Frecuencia</strong><div class="dropzone example-drop" data-accept="frecuencia">Ejemplo de frecuencia</div></div>
+              <div class="term"><strong>Porcentaje</strong><div class="dropzone example-drop" data-accept="porcentaje">Ejemplo de porcentaje</div></div>
+            </div>
+            <div class="cards" id="examples-cards" aria-label="Tarjetas de ejemplos">
+              <div class="drag-card" draggable="true" data-match="porcentaje">40% de familias prioriza agua segura.</div>
+              <div class="drag-card" draggable="true" data-match="variable">Necesidad prioritaria de la comunidad.</div>
+              <div class="drag-card" draggable="true" data-match="dato">Una familia responde: “agua segura”.</div>
+              <div class="drag-card" draggable="true" data-match="frecuencia">8 familias eligieron agua segura.</div>
+              <div class="drag-card" draggable="true" data-match="variable">Tipo de necesidad elegida en la consulta.</div>
+              <div class="drag-card" draggable="true" data-match="dato">Una respuesta escrita en la encuesta.</div>
+              <div class="drag-card" draggable="true" data-match="frecuencia">5 familias eligieron educación.</div>
+              <div class="drag-card" draggable="true" data-match="porcentaje">25 de cada 100 respuestas corresponden a educación.</div>
+            </div>
+            <button class="btn secondary" id="check-examples">Verificar ejemplos</button>
+            <button class="btn gold" id="reset-examples">Repetir ejemplos</button>
+            <div id="examples-feedback" class="match-feedback"></div>
+          </div>
+        </section>
+
+        <section id="etno" class="section panel">
+          <div class="panel-head"><h2>Mirada etnomatemática</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div>
+                <p>La estadística no empieza en la computadora. Empieza cuando una comunidad expresa una necesidad, cuenta experiencias, compara situaciones y decide qué atender primero.</p>
+                <div class="note">Pregunta crítica: ¿este dato representa a toda la comunidad o solo a quienes pudieron responder?</div>
+                <button class="btn" data-target="respuesta-etno">Ver posible respuesta</button>
+                <div id="respuesta-etno" class="answer">
+                  Una posible respuesta es: el dato representa únicamente a las personas consultadas. Para saber si representa a toda la comunidad, debemos revisar tamaño de la muestra, sectores incluidos, lengua usada en la consulta, horarios, participación de mujeres, jóvenes y familias alejadas.
+                </div>
+              </div>
+              <div>
+                <svg viewBox="0 0 420 250" width="100%" height="250" role="img" aria-label="Diagrama voz memoria dato territorio">
+                  <rect width="420" height="250" fill="#f8fbff"/>
+                  <circle cx="90" cy="75" r="44" fill="#fff0ec" stroke="#d6352a" stroke-width="4"/>
+                  <circle cx="210" cy="75" r="44" fill="#fff6d6" stroke="#ffcf18" stroke-width="4"/>
+                  <circle cx="90" cy="175" r="44" fill="#e8f5fd" stroke="#1688c9" stroke-width="4"/>
+                  <circle cx="210" cy="175" r="44" fill="#eef8ef" stroke="#36a852" stroke-width="4"/>
+                  <path d="M130 75 H170 M90 119 V131 M210 119 V131 M130 175 H170" stroke="#153f5f" stroke-width="3" stroke-dasharray="6 6"/>
+                  <text x="66" y="80" font-size="18" font-weight="900" fill="#153f5f">Voz</text>
+                  <text x="175" y="80" font-size="18" font-weight="900" fill="#153f5f">Memoria</text>
+                  <text x="67" y="180" font-size="18" font-weight="900" fill="#153f5f">Dato</text>
+                  <text x="170" y="180" font-size="18" font-weight="900" fill="#153f5f">Territorio</text>
+                  <rect x="280" y="48" width="110" height="154" rx="8" fill="#153f5f"/>
+                  <text x="302" y="82" font-size="16" font-weight="900" fill="#fff">Decisión</text>
+                  <text x="298" y="112" font-size="13" fill="#fff">con cálculo,</text>
+                  <text x="298" y="135" font-size="13" fill="#fff">contexto y</text>
+                  <text x="298" y="158" font-size="13" fill="#fff">responsabilidad</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="ejemplo" class="section panel">
+          <div class="panel-head"><h2>Ejemplo</h2></div>
+          <div class="panel-body">
+            <p><strong>Problema:</strong> Una comunidad consulta a 20 familias sobre la necesidad que consideran prioritaria para mejorar la vida comunitaria. Queremos organizar las respuestas en una <strong>tabla de frecuencia</strong>.</p>
+            <p><strong>¿Qué hacemos con la tabla?</strong> Contamos cuántas familias eligieron cada necesidad, calculamos el porcentaje correspondiente y luego interpretamos cuál necesidad tiene mayor peso dentro del grupo consultado.</p>
+            <table>
+              <thead>
+                <tr><th>Necesidad prioritaria</th><th>Frecuencia \(f_i\)</th><th>Porcentaje \(P_i=\frac{f_i}{n}\times100\)</th><th>Interpretación breve</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Agua segura</td><td>8</td><td class="calc">\( \frac{8}{20}\times100=40\% \)</td><td>Es la necesidad más mencionada.</td></tr>
+                <tr><td>Educación y apoyo escolar</td><td>5</td><td class="calc">\( \frac{5}{20}\times100=25\% \)</td><td>Una de cada cuatro familias la prioriza.</td></tr>
+                <tr><td>Comunicación comunitaria</td><td>3</td><td class="calc">\( \frac{3}{20}\times100=15\% \)</td><td>Necesidad presente, pero menos frecuente.</td></tr>
+                <tr><td>Turismo y economía local</td><td>2</td><td class="calc">\( \frac{2}{20}\times100=10\% \)</td><td>Prioridad de una parte menor del grupo.</td></tr>
+                <tr><td>Alimentación y nutrición</td><td>2</td><td class="calc">\( \frac{2}{20}\times100=10\% \)</td><td>Comparte peso con turismo/economía.</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>20</strong></td><td><strong>100%</strong></td><td>La tabla cierra correctamente.</td></tr>
+              </tbody>
+            </table>
+            <button class="btn" data-target="respuesta-tabla">Revelar interpretación completa</button>
+            <div id="respuesta-tabla" class="answer">
+              El 40% de las familias prioriza agua segura. Esto indica que agua segura es la necesidad más frecuente en la consulta. Sin embargo, antes de decidir se debe verificar si participaron todos los sectores de la comunidad y si “agua segura” se refiere a cobertura, continuidad, caudal o calidad.
+            </div>
+          </div>
+        </section>
+
+        <section id="graficas" class="section panel">
+          <div class="panel-head"><h2>Opciones de gráficas</h2></div>
+          <div class="panel-body">
+            <p>La tabla de frecuencia permite construir gráficos. Observa las opciones y elige cuál ayuda mejor a entender el problema.</p>
+            <div class="graph-options">
+              <div class="graph-card">
+                <h4>Opción A: barras</h4>
+                <svg viewBox="0 0 260 125">
+                  <line x1="32" y1="105" x2="238" y2="105" stroke="#153f5f" stroke-width="2"/>
+                  <line x1="32" y1="15" x2="32" y2="105" stroke="#153f5f" stroke-width="2"/>
+                  <rect x="50" y="45" width="24" height="60" fill="#1688c9"/>
+                  <rect x="90" y="67" width="24" height="38" fill="#ffcf18"/>
+                  <rect x="130" y="82" width="24" height="23" fill="#d6352a"/>
+                  <rect x="170" y="90" width="24" height="15" fill="#36a852"/>
+                  <rect x="210" y="90" width="24" height="15" fill="#b8860b"/>
+                </svg>
+                <p>Compara categorías con claridad.</p>
+                <button class="btn" data-graph="barras">Elegir</button>
+              </div>
+              <div class="graph-card">
+                <h4>Opción B: circular</h4>
+                <svg viewBox="0 0 260 125">
+                  <circle cx="130" cy="62" r="45" fill="#1688c9"/>
+                  <path d="M130 62 L130 17 A45 45 0 0 1 172 78 Z" fill="#ffcf18"/>
+                  <path d="M130 62 L172 78 A45 45 0 0 1 118 105 Z" fill="#d6352a"/>
+                  <path d="M130 62 L118 105 A45 45 0 0 1 86 82 Z" fill="#36a852"/>
+                </svg>
+                <p>Muestra partes de un todo, pero compara peor.</p>
+                <button class="btn" data-graph="circular">Elegir</button>
+              </div>
+              <div class="graph-card">
+                <h4>Opción C: línea</h4>
+                <svg viewBox="0 0 260 125">
+                  <line x1="32" y1="105" x2="238" y2="105" stroke="#153f5f" stroke-width="2"/>
+                  <line x1="32" y1="15" x2="32" y2="105" stroke="#153f5f" stroke-width="2"/>
+                  <polyline points="45,86 90,60 135,72 180,40 225,50" fill="none" stroke="#d6352a" stroke-width="5"/>
+                  <circle cx="45" cy="86" r="5" fill="#d6352a"/>
+                  <circle cx="90" cy="60" r="5" fill="#d6352a"/>
+                  <circle cx="135" cy="72" r="5" fill="#d6352a"/>
+                  <circle cx="180" cy="40" r="5" fill="#d6352a"/>
+                  <circle cx="225" cy="50" r="5" fill="#d6352a"/>
+                </svg>
+                <p>Sirve mejor para cambios en el tiempo.</p>
+                <button class="btn" data-graph="linea">Elegir</button>
+              </div>
+            </div>
+            <div id="graph-feedback" class="quiz-feedback"></div>
+            <div class="bar-wrap">
+              <div class="bar-row"><strong>Agua segura</strong><div class="bar"><div class="fill" style="width:40%"></div></div><span>40%</span></div>
+              <div class="bar-row"><strong>Educación</strong><div class="bar"><div class="fill" style="width:25%"></div></div><span>25%</span></div>
+              <div class="bar-row"><strong>Comunicación</strong><div class="bar"><div class="fill" style="width:15%"></div></div><span>15%</span></div>
+              <div class="bar-row"><strong>Turismo</strong><div class="bar"><div class="fill" style="width:10%"></div></div><span>10%</span></div>
+              <div class="bar-row"><strong>Alimentación</strong><div class="bar"><div class="fill" style="width:10%"></div></div><span>10%</span></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="ejercicios" class="section panel">
+          <div class="panel-head"><h2>Ejercicios</h2></div>
+          <div class="panel-body">
+            <div class="grid-2">
+              <div class="exercise">
+                <span class="tag">Construcción de tabla</span>
+                <h4>Completa porcentajes</h4>
+                <p>De 20 familias: caminos 7, atención infantil 4, lengua 3, asesoría jurídica 3, turismo 3.</p>
+                <label>Caminos (%)</label><input id="camino" type="number" placeholder="Ej. 35">
+                <label>Atención infantil (%)</label><input id="infantil" type="number" placeholder="Ej. 20">
+                <label>Lengua (%)</label><input id="lengua" type="number" placeholder="Ej. 15">
+                <button class="btn" id="check-table">Calificar tabla</button>
+                <button class="btn gold" data-target="answer-table-ex">Ver respuesta</button>
+                <div id="table-feedback" class="quiz-feedback"></div>
+                <div id="answer-table-ex" class="answer">Respuesta: caminos 35%, atención infantil 20%, lengua 15%, asesoría jurídica 15% y turismo 15%. Se calcula cada valor con \(P_i=\frac{f_i}{20}\times100\).</div>
+              </div>
+              <div class="exercise">
+                <span class="tag">Interpretación crítica</span>
+                <h4>Completa la frase</h4>
+                <p>Escribe una interpretación usando esta estructura:</p>
+                <p><strong>“Este dato muestra..., pero no muestra... Por eso debemos...”</strong></p>
+                <textarea id="interpretacion" placeholder="Escribe tu interpretación aquí"></textarea>
+                <button class="btn secondary" id="check-interpretation">Revisar interpretación</button>
+                <button class="btn gold" data-target="answer-interpretation-ex">Ver modelo</button>
+                <div id="interpretation-feedback" class="quiz-feedback"></div>
+                <div id="answer-interpretation-ex" class="answer">Modelo: Este dato muestra que caminos es la necesidad más mencionada, pero no muestra si todos los sectores de la comunidad fueron consultados. Por eso debemos ampliar la consulta y ubicar qué zonas tienen mayor dificultad.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="carreras" class="section panel">
+          <div class="panel-head"><h2>Conexión con las carreras: ¿para qué sirve esta tabla?</h2></div>
+          <div class="panel-body">
+            <p>Esta sección no es una actividad aislada: sirve para mostrar que la misma tabla de frecuencia puede orientar decisiones diferentes según la carrera.</p>
+            <div class="career-list">
+              <div class="career"><strong>Pedagogías:</strong> priorizar apoyos escolares según necesidades detectadas.</div>
+              <div class="career"><strong>Lengua y Cultura:</strong> revisar si la consulta respetó lengua, identidad y categorías propias.</div>
+              <div class="career"><strong>Turismo:</strong> relacionar necesidades comunitarias con economía local y caminos.</div>
+              <div class="career"><strong>Alimentación:</strong> identificar si alimentación requiere datos de producción, costo o acceso.</div>
+              <div class="career"><strong>Desarrollo Infantil:</strong> conectar agua, alimentación y educación con bienestar infantil.</div>
+              <div class="career"><strong>Comunicación:</strong> comunicar resultados sin exagerar ni manipular porcentajes.</div>
+              <div class="career"><strong>Derecho:</strong> usar datos como evidencia inicial para solicitudes o reclamos.</div>
+              <div class="career"><strong>Gestión del Agua:</strong> planificar indicadores de cobertura, caudal, calidad y continuidad.</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="cierre" class="section panel">
+          <div class="panel-head"><h2>Cierre y ticket de salida</h2></div>
+          <div class="panel-body">
+            <div class="closing">
+              <h3>Idea final</h3>
+              <p>Una tabla de frecuencia transforma respuestas sueltas en información organizada. Pero una buena decisión necesita cálculo, contexto y escucha del territorio.</p>
+            </div>
+            <div class="exercise" style="margin-top:14px">
+              <span class="tag">Ticket de salida</span>
+              <h4>Envía tu respuesta</h4>
+              <p>Si 9 de 30 familias priorizan agua, ¿qué porcentaje representa?</p>
+              <input id="ticket-number" type="number" placeholder="Escribe solo el número. Ej. 30">
+              <p>Ahora escribe una interpretación crítica breve.</p>
+              <textarea id="ticket-text" placeholder="Ej. El dato muestra..., pero no muestra..."></textarea>
+              <button class="btn gold" id="submit-ticket">Enviar respuesta</button>
+              <button class="btn" data-target="ticket-solution">Ver respuesta</button>
+              <div id="ticket-feedback" class="ticket-feedback"></div>
+              <div id="ticket-solution" class="answer">
+                Respuesta: \( \frac{9}{30}\times 100 = 30\% \). Interpretación modelo: el 30% de las familias consultadas prioriza agua; este dato orienta una decisión, pero debe complementarse con información sobre sectores, calidad, continuidad y caudal.
+              </div>
+            </div>
+            <div class="solution-box">
+              <strong>Ver soluciones de la clase</strong>
+              <button class="btn secondary" data-target="all-solutions" style="margin-left:8px">Mostrar soluciones</button>
+              <div id="all-solutions" class="answer">
+                <p><strong>Tabla rápida:</strong> caminos 35%, atención infantil 20%, lengua 15%, asesoría jurídica 15%, turismo 15%.</p>
+                <p><strong>Gráfica óptima:</strong> barras, porque compara categorías de manera directa.</p>
+                <p><strong>Ticket:</strong> 30%.</p>
+              </div>
+            </div>
+            <div class="student-message">
+              Hoy aprendiste que una tabla de frecuencia no solo ordena números: ayuda a escuchar mejor las respuestas, comparar necesidades y tomar decisiones con más claridad y responsabilidad.
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="side">
+        <div class="panel">
+          <div class="panel-head"><h3>Fórmula clave</h3></div>
+          <div class="panel-body">
+            <div class="formula-card">\[P_i=\frac{f_i}{n}\times100\]</div>
+            <p><strong>\(f_i\):</strong> frecuencia de una categoría.</p>
+            <p><strong>\(n\):</strong> total de datos.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h3>Videos y recursos</h3></div>
+          <div class="panel-body">
+            <a class="video-card" target="_blank" rel="noopener" href="https://es.khanacademy.org/math/statistics-probability/analyzing-categorical-data">
+              <div class="video-title"><span class="play">▶</span>Khan Academy: datos categóricos</div>
+              <p>Refuerzo sobre tablas y frecuencias relativas.</p>
+            </a>
+            <a class="video-card" target="_blank" rel="noopener" href="https://canal.uned.es/video/666bed31c45c4248c3573112">
+              <div class="video-title"><span class="play">▶</span>UNED: etnomatemática</div>
+              <p>Video sobre matemática, cultura y contexto.</p>
+            </a>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <p class="print-note">Versión imprimible: las respuestas se muestran automáticamente al imprimir.</p>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll('[data-target]');
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.getElementById(button.dataset.target);
+        if (target) target.classList.toggle('show');
+      });
+    });
+
+    let dragged = null;
+    function prepareDragCards(){
+      document.querySelectorAll('.drag-card').forEach((card) => {
+        card.addEventListener('dragstart', () => { dragged = card; });
+      });
+    }
+    prepareDragCards();
+    document.querySelectorAll('.dropzone').forEach((zone) => {
+      zone.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        zone.classList.add('over');
+      });
+      zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+      zone.addEventListener('drop', (event) => {
+        event.preventDefault();
+        zone.classList.remove('over');
+        if (!dragged) return;
+        if (zone.querySelector('.drag-card')) return;
+        zone.textContent = '';
+        zone.appendChild(dragged);
+        dragged = null;
+      });
+    });
+
+    function checkZones(selector, feedbackId){
+      const zones = [...document.querySelectorAll(selector)];
+      let missing = 0;
+      let wrong = [];
+      let correctCount = 0;
+      zones.forEach((zone) => {
+        const card = zone.querySelector('.drag-card');
+        if (!card) {
+          missing += 1;
+          return;
+        }
+        card.classList.remove('correct', 'wrong');
+        if (card.dataset.match === zone.dataset.accept) {
+          card.classList.add('correct');
+          correctCount += 1;
+        } else {
+          card.classList.add('wrong');
+          const label = zone.closest('.term')?.querySelector('strong')?.textContent || 'una zona';
+          wrong.push(label);
+        }
+      });
+      const feedback = document.getElementById(feedbackId);
+      const correct = wrong.length === 0 && missing === 0;
+      feedback.className = 'match-feedback ' + (correct ? 'ok' : 'bad');
+      if (correct) {
+        feedback.textContent = 'Correcto. Todas las tarjetas colocadas corresponden al concepto.';
+      } else {
+        const parts = [];
+        if (wrong.length) parts.push('Revisa: ' + wrong.join(', ') + '.');
+        if (missing) parts.push('Faltan ' + missing + ' espacio(s) por completar.');
+        parts.push('Aciertos: ' + correctCount + ' de ' + zones.length + '.');
+        feedback.textContent = parts.join(' ');
+      }
+    }
+    document.getElementById('check-defs').addEventListener('click', () => checkZones('.term .dropzone:not(.example-drop)', 'defs-feedback'));
+    document.getElementById('check-examples').addEventListener('click', () => checkZones('.example-drop', 'examples-feedback'));
+
+    function resetActivity(dropSelector, cardContainerId, feedbackId, placeholder){
+      const cardContainer = document.getElementById(cardContainerId);
+      document.querySelectorAll(dropSelector).forEach((zone) => {
+        const card = zone.querySelector('.drag-card');
+        if (card) {
+          card.classList.remove('correct', 'wrong');
+          cardContainer.appendChild(card);
+        }
+        zone.textContent = placeholder;
+      });
+      const feedback = document.getElementById(feedbackId);
+      feedback.textContent = '';
+      feedback.className = 'match-feedback';
+      prepareDragCards();
+    }
+    document.getElementById('reset-defs').addEventListener('click', () => {
+      resetActivity('.term .dropzone:not(.example-drop)', 'defs-cards', 'defs-feedback', 'Arrastra aquí su definición');
+    });
+    document.getElementById('reset-examples').addEventListener('click', () => {
+      document.querySelectorAll('.example-drop').forEach((zone) => {
+        const label = zone.closest('.term')?.querySelector('strong')?.textContent || 'concepto';
+        zone.dataset.placeholder = 'Ejemplo de ' + label.toLowerCase();
+      });
+      const cardContainer = document.getElementById('examples-cards');
+      document.querySelectorAll('.example-drop').forEach((zone) => {
+        const card = zone.querySelector('.drag-card');
+        if (card) {
+          card.classList.remove('correct', 'wrong');
+          cardContainer.appendChild(card);
+        }
+        zone.textContent = zone.dataset.placeholder;
+      });
+      const feedback = document.getElementById('examples-feedback');
+      feedback.textContent = '';
+      feedback.className = 'match-feedback';
+      prepareDragCards();
+    });
+
+    document.querySelectorAll('[data-graph]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const feedback = document.getElementById('graph-feedback');
+        if (button.dataset.graph === 'barras') {
+          feedback.className = 'quiz-feedback ok';
+          feedback.textContent = 'Correcto. La gráfica de barras es la opción más clara porque permite comparar categorías.';
+        } else if (button.dataset.graph === 'circular') {
+          feedback.className = 'quiz-feedback bad';
+          feedback.textContent = 'Puede usarse para partes de un todo, pero compara peor categorías cercanas. Para esta clase conviene barras.';
+        } else {
+          feedback.className = 'quiz-feedback bad';
+          feedback.textContent = 'La gráfica de línea sirve para cambios en el tiempo. Aquí no estamos comparando semanas o años.';
+        }
+      });
+    });
+
+    document.getElementById('check-table').addEventListener('click', () => {
+      const c = Number(document.getElementById('camino').value);
+      const i = Number(document.getElementById('infantil').value);
+      const l = Number(document.getElementById('lengua').value);
+      const ok = c === 35 && i === 20 && l === 15;
+      const feedback = document.getElementById('table-feedback');
+      feedback.className = 'quiz-feedback ' + (ok ? 'ok' : 'bad');
+      feedback.textContent = ok
+        ? 'Excelente. La tabla va bien: caminos 35%, atención infantil 20% y lengua 15%.'
+        : 'Revisa la fórmula: porcentaje = frecuencia dividido para 20, multiplicado por 100.';
+    });
+
+    document.getElementById('check-interpretation').addEventListener('click', () => {
+      const text = document.getElementById('interpretacion').value.toLowerCase();
+      const hasShow = text.includes('muestra');
+      const hasLimit = text.includes('no muestra') || text.includes('pero');
+      const hasDecision = text.includes('debemos') || text.includes('decidir') || text.includes('verificar');
+      const ok = hasShow && hasLimit && hasDecision;
+      const feedback = document.getElementById('interpretation-feedback');
+      feedback.className = 'quiz-feedback ' + (ok ? 'ok' : 'bad');
+      feedback.textContent = ok
+        ? 'Muy bien. Tu interpretación incluye dato, límite y acción posterior.'
+        : 'Mejora la frase incluyendo tres partes: qué muestra, qué no muestra y qué debemos hacer.';
+    });
+
+    document.getElementById('submit-ticket').addEventListener('click', () => {
+      const number = Number(document.getElementById('ticket-number').value);
+      const text = document.getElementById('ticket-text').value.trim();
+      const feedback = document.getElementById('ticket-feedback');
+      if (number === 30 && text.length >= 25) {
+        feedback.className = 'ticket-feedback ok';
+        feedback.textContent = '¡Felicitaciones! Tu cálculo es correcto y tu interpretación muestra pensamiento estadístico.';
+      } else if (number !== 30) {
+        feedback.className = 'ticket-feedback bad';
+        feedback.textContent = 'Revisa el cálculo: 9 dividido para 30 y multiplicado por 100.';
+      } else {
+        feedback.className = 'ticket-feedback bad';
+        feedback.textContent = 'El cálculo está bien. Agrega una interpretación crítica un poco más completa.';
+      }
+    });
+
+    let total = 20 * 60;
+    let remaining = total;
+    let timer = null;
+    const timeEl = document.getElementById('time');
+
+    function renderTime(){
+      const m = Math.floor(remaining / 60).toString().padStart(2,'0');
+      const s = (remaining % 60).toString().padStart(2,'0');
+      timeEl.textContent = `${m}:${s}`;
+      timeEl.style.color = remaining <= 120 ? '#b94f3d' : '#153f5f';
+    }
+    function startTimer(){
+      if(timer) return;
+      timer = setInterval(() => {
+        remaining = Math.max(0, remaining - 1);
+        renderTime();
+        if(remaining === 0){
+          clearInterval(timer);
+          timer = null;
+        }
+      }, 1000);
+    }
+    function pauseTimer(){
+      clearInterval(timer);
+      timer = null;
+    }
+    function resetTimer(){
+      pauseTimer();
+      remaining = total;
+      renderTime();
+    }
+    document.getElementById('start').addEventListener('click', startTimer);
+    document.getElementById('pause').addEventListener('click', pauseTimer);
+    document.getElementById('reset').addEventListener('click', resetTimer);
+    renderTime();
+  </script>
+</body>
+</html>
